@@ -55,7 +55,7 @@ If your system has already maven in class path, then open terminal / PowerShell 
 ```
 mvn spring-boot:run
 ```
-![Figure below shows the example.](../images/Screenshot from 2021-06-16 20-25-13.png)
+![Figure below shows the example.](../images/run-app.png)
 
 You will see the application running on port 8080. However, if you are not familiar enough with terminal / PowerShell, then you can also run it from your favorite IDE. 
 
