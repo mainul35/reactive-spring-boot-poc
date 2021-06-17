@@ -14,6 +14,7 @@
     <packaging>pom</packaging>
     
     <modules>
-    	<module>hello-reactive-spring-boot</module>
+    	<module>projects/hello-reactive-spring-boot</module>
+    	<module>projects/configuring-logger</module>
     </modules>
 </project>
