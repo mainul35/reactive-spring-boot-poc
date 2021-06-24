@@ -1,49 +1,97 @@
-**Note:** The previous article was [hello-reactive-spring-boot](../hello-reactive-spring-boot/). If you are unable to understand something, you can mail me at: [mainuls18@gmail.com](mailto:mainuls18@gmail.com). We will not repeat the same things again and again.
+**Note:** The previous article was [configuring logger](../configuring-logger/). If you are unable to understand something, you can mail me at: [mainuls18@gmail.com](mailto:mainuls18@gmail.com). We will not repeat the same things again and again.
 
-# Configuration
-To configure the logging support for spring boot, we have to add the following properties in the application.properties file.
+# Dependency
+We will use ``lombok`` for generating getters, setters, constructors, toString(), hashCode(), equals(), builder and logger object.
 
 ```
-logging.level.org.springframework=INFO
-logging.level.com.mainul35=ERROR
-logging.file.name=logs/application.log
-logging.file.max-size=10MB
-logging.pattern.rolling-file-name=logs/application-%d{yyyy-MM-dd}.%i.log
-logging.pattern.file=%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <scope>provided</scope>
+</dependency>
 ```
-- Notice that in above properties, I have set the log level - ``logging.level.com.mainul35`` to ``ERROR`` for my application's package. So only the error logs will be printed in the console as well as file.
-
-- ``logging.file.name`` will be used to define the folder and file name where the logs will be appended
-
-- ``logging.file.max-size`` - this defines that the maximum size of a log file will be 10 MB.
-
-- ``logging.pattern.rolling-file-name`` On the end of each day the log file will be stored as back up file with the provided value / pattern as file name and a new file with the value of ``logging.file.name`` will be created.
-
-- ``logging.pattern.file`` - this property will be used to append the log with the provided pattern value.
-
-
 # Controller
-
-1. In our ``HelloController`` class, define a Logger object from the ``org.slf4j`` package.
-
+We have created a UserController class, which will basically perform all operations related to User. We have also added a ``User`` model class for our use.
+Note that, we have created ``GET, POST, PUT, DELETE`` methods.
 ```
-Logger LOGGER = LoggerFactory.getLogger(HelloController.class);
-```
-
-2. Now in the ``hello()`` method, add some logging output statement.
-
-```	
-	@GetMapping({"", "/"})
-	public Mono<String> hello() {
-		LOGGER.info("======== Printing an INFO Log ========");
-		LOGGER.debug("======== Printing an DEBUG Log ========");
-		LOGGER.warn("======== Printing an WARNING Log ========");
-		LOGGER.error("======== Printing an Error Log ========");
-        return Mono.just("Hello world.");
+@RestController
+@RequestMapping("/users")
+public class UserController {
+	
+	List<User> users = new ArrayList<>();
+	
+	public UserController() {
+		// TODO Auto-generated constructor stub
+		
+		users.add(User.builder()
+		        .uuid(UUID.randomUUID().toString())
+		        .username("mainul35")
+		        .password("test")
+		        .email("mainuls18@gmail.com")
+		        .build());
+		
+		users.add(User.builder()
+		        .uuid(UUID.randomUUID().toString())
+		        .username("mainul36")
+		        .password("test")
+		        .email("mainuls19@gmail.com")
+		        .build());
+	}
+	
+    @GetMapping
+    public Flux<User> findAll() {
+        return Mono.just(users).flatMapMany(Flux::fromIterable);
     }
+
+    @GetMapping("/{username}")
+    public Mono<User> findByUsername(@PathVariable("username") final String username) {
+		var userOptional = users.stream().filter(user1 -> user1.getUsername().equals(username)).findAny();
+
+		return userOptional.map(Mono::just).orElseGet(Mono::empty);
+	}
+    
+    @PostMapping
+    public Mono<User> create(@RequestBody final User user){
+		user.setUuid(UUID.randomUUID().toString());
+		users.add(user);
+    	return Mono.just(user);
+    }
+    
+    @PutMapping("/{id}")
+    public Mono<User> update(@PathVariable("id") final String id, @RequestBody final User user){
+		var user1 = users.stream().filter(u -> u.getUuid().equals(id)).map(u -> {
+			BeanUtils.copyProperties(user, u);
+			return u;
+		}).findFirst().get();
+    	return Mono.just(user1);
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> deleteById(@PathVariable("id") final String id) {
+		users.removeIf(u -> u.getUuid().equals(id));
+    	return Mono.empty();
+    }
+
+    @GetMapping("/me")
+    public Mono<User> getUser() {
+    	return Mono.just(users.get(0));
+    }
+}
 ```
 
-Notice that here we have written 4 types of logging statement (info, debug, warn, error). But in out logging file, only the error log will be appended. The reason is because of our configuration in properties file.
+# Model
+Our User model class is defined in the ``model`` package.
+```
+@Data
+@Builder
+public class User implements Serializable {
+	private String uuid;
+	private String username;
+	private String email;
+	private String password;
+}
+```
+Note that we have used ``@Data`` and ``@Builder`` annotations from Lombok.
 
 # Run Application
 If your system has already maven in class path, then open terminal / PowerShell inside your project folder and run the following maven command.

@@ -51,12 +51,9 @@ public class UserController {
     @GetMapping("/{username}")
     public Mono<User> findByUsername(@PathVariable("username") final String username) {
 		var userOptional = users.stream().filter(user1 -> user1.getUsername().equals(username)).findAny();
-		
-		if (userOptional.isPresent()) {
-			return Mono.just(userOptional.get());
-		}
-		return Mono.empty();
-    }
+
+		return userOptional.map(Mono::just).orElseGet(Mono::empty);
+	}
     
     @PostMapping
     public Mono<User> create(@RequestBody final User user){
