@@ -16,5 +16,6 @@
     <modules>
     	<module>projects/hello-reactive-spring-boot</module>
     	<module>projects/configuring-logger</module>
+    	<module>projects/more-about-reactive-controllers</module>
     </modules>
 </project>

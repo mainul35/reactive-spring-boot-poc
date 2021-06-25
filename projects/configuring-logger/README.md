@@ -7,17 +7,17 @@ To configure the logging support for spring boot, we have to add the following p
 logging.level.org.springframework=INFO
 logging.level.com.mainul35=ERROR
 logging.file.name=logs/application.log
-logging.file.max-size=10MB
-logging.pattern.rolling-file-name=logs/application-%d{yyyy-MM-dd}.%i.log
+logging.logback.rollingpolicy.max-file-size=10MB
+logging.logback.rollingpolicy.file-name-pattern=logs/application-%d{yyyy-MM-dd}.%i.log
 logging.pattern.file=%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n
 ```
 - Notice that in above properties, I have set the log level - ``logging.level.com.mainul35`` to ``ERROR`` for my application's package. So only the error logs will be printed in the console as well as file.
 
 - ``logging.file.name`` will be used to define the folder and file name where the logs will be appended
 
-- ``logging.file.max-size`` - this defines that the maximum size of a log file will be 10 MB.
+- ``logging.logback.rollingpolicy.max-file-size`` - this defines that the maximum size of a log file will be 10 MB.
 
-- ``logging.pattern.rolling-file-name`` On the end of each day the log file will be stored as back up file with the provided value / pattern as file name and a new file with the value of ``logging.file.name`` will be created.
+- ``logging.logback.rollingpolicy.file-name-pattern`` On the end of each day the log file will be stored as back up file with the provided value / pattern as file name and a new file with the value of ``logging.file.name`` will be created.
 
 - ``logging.pattern.file`` - this property will be used to append the log with the provided pattern value.
 

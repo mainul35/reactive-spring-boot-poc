@@ -9,7 +9,7 @@ The only dependency we need to make a simple reactive Spring Boot application is
 ```
 
 # Maven Plugins
-In the build section, add the ``spring-boot-maven-plugin`` plugin
+In the build section, add the ``spring-boot-maven-plugin`` and ``maven-compiler-plugin`` plugin
 
 ```
 <build>
@@ -18,12 +18,21 @@ In the build section, add the ``spring-boot-maven-plugin`` plugin
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
         </plugin>
-		<!-- Add more plugins if necessary -->
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>11</source>
+                <target>11</target>
+            </configuration>
+        </plugin>
+	<!-- Add more plugins if necessary -->
     </plugins>
 </build>
 ```
 # Application Entrypoint
-According to convension of a Java program, we require a main class (a class containing main method is known as main class). In our case, we have named our main class as ``Application``. Note that out main class will be annotated with ``@SpringBootApplication`` annotation, so that Spring boot framework can identify this class as the entry point.
+According to convention of a Java program, we require a main class (a class containing main method is known as main class). In our case, we have named our main class as ``Application``. Note that out main class will be annotated with ``@SpringBootApplication`` annotation, so that Spring boot framework can identify this class as the entry point.
 ```
 @SpringBootApplication
 public class Application {
