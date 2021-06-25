@@ -65,6 +65,7 @@ public class UserController {
     @PutMapping("/{id}")
     public Mono<User> update(@PathVariable("id") final String id, @RequestBody final User user){
 		var user1 = users.stream().filter(u -> u.getUuid().equals(id)).map(u -> {
+			user.setUuid(id);
 			BeanUtils.copyProperties(user, u);
 			return u;
 		}).findFirst().get();

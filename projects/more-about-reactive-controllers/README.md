@@ -106,9 +106,14 @@ You will see the application running on port 8080. However, if you are not famil
 
 
 # Try with Postman
-If you are excited to test your application, go to postman do a GET request to ``http://localhost:8080/``. If you see the response like the following screenshot, you have successfully created your very first reactive application.
-![](../images/hello-world-response.png)
+### All users:
+![](../images/more-about-reactive-controllers/users-all.png)
 
-# Logging Output
+### By username
+![](../images/more-about-reactive-controllers/by-username.png)
 
-![The output in log file](../images/logging-output.png)
+### Update user by ID
+![](../images/more-about-reactive-controllers/update-user.png)
+
+### Delete user by ID
+![](../images/more-about-reactive-controllers/delete-user.png)
