@@ -64,7 +64,7 @@ If your system has already maven in class path, then open terminal / PowerShell 
 ```
 mvn spring-boot:run
 ```
-![Figure below shows the example.](../images/run-app.png)
+![Figure below shows the example.](../images/hello-reactive-spring-boot/run-app.png)
 
 You will see the application running on port 8080. However, if you are not familiar enough with terminal / PowerShell, then you can also run it from your favorite IDE. 
 
@@ -72,4 +72,4 @@ You will see the application running on port 8080. However, if you are not famil
 
 # Try with Postman
 If you are excited to test your application, go to postman do a GET request to ``http://localhost:8080/``. If you see the response like the following screenshot, you have successfully created your very first reactive application.
-![](../images/hello-world-response.png)
+![](../images/hello-reactive-spring-boot/hello-world-response.png)
