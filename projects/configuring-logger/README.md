@@ -63,4 +63,4 @@ If you are excited to test your application, go to postman do a GET request to `
 
 # Logging Output
 
-![The output in log file](../images/logging-output.png)
+![The output in log file](../images/configuring-logger/logging-output.png)
