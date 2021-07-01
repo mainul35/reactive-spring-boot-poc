@@ -4,5 +4,6 @@ target/
 *.iml
 .settings
 .factorypath
-.idea
-.vscode
+.idea/
+.vscode/
+logs/
