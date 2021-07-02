@@ -17,5 +17,6 @@
     	<module>projects/hello-reactive-spring-boot</module>
     	<module>projects/configuring-logger</module>
     	<module>projects/more-about-reactive-controllers</module>
+    	<module>projects/reactive-webmvc-with-thymeleaf</module>
     </modules>
 </project>
