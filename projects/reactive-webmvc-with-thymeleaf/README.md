@@ -1,20 +1,25 @@
-**Note:** The previous article was [configuring logger](../configuring-logger/). If you are unable to understand something, you can mail me at: [mainuls18@gmail.com](mailto:mainuls18@gmail.com). We will not repeat the same things again and again.
+**Note:** The previous article was [more-about-reactive-controllers](../more-about-reactive-controllers/). 
+If you are unable to understand something, you can mail me at: [mainuls18@gmail.com](mailto:mainuls18@gmail.com). 
+We will not repeat the same things again and again.
 
 # Dependency
-We will use ``lombok`` for generating getters, setters, constructors, toString(), hashCode(), equals(), builder and logger object.
+We will use ``spring-boot-starter-thymeleaf`` to enable templating support.
 
 ```
 <dependency>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-    <scope>provided</scope>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
 </dependency>
 ```
 # Controller
-We have created a UserController class, which will basically perform all operations related to User. We have also added a ``User`` model class for our use.
-Note that, we have created ``GET, POST, PUT, DELETE`` methods.
+We have changed the codes of our existing controller classes to support mvc.
+
+* Notice that we have replaced the ``@RestController`` annotation with ``@Controller`` annotation.
+* We have changed the return type of the ``findAll`` method to ``Mono<String>``
+* We have injected an instance of ``org.springframework.ui.Model`` as parameter
+* We have added the flux of users as modelAttribute
 ```
-@RestController
+@Controller
 @RequestMapping("/users")
 public class UserController {
 	
@@ -39,59 +44,44 @@ public class UserController {
 	}
 	
     @GetMapping
-    public Flux<User> findAll() {
-        return Mono.just(users).flatMapMany(Flux::fromIterable);
-    }
-
-    @GetMapping("/{username}")
-    public Mono<User> findByUsername(@PathVariable("username") final String username) {
-		var userOptional = users.stream().filter(user1 -> user1.getUsername().equals(username)).findAny();
-
-		return userOptional.map(Mono::just).orElseGet(Mono::empty);
-	}
-    
-    @PostMapping
-    public Mono<User> create(@RequestBody final User user){
-		user.setUuid(UUID.randomUUID().toString());
-		users.add(user);
-    	return Mono.just(user);
-    }
-    
-    @PutMapping("/{id}")
-    public Mono<User> update(@PathVariable("id") final String id, @RequestBody final User user){
-		var user1 = users.stream().filter(u -> u.getUuid().equals(id)).map(u -> {
-			BeanUtils.copyProperties(user, u);
-			return u;
-		}).findFirst().get();
-    	return Mono.just(user1);
-    }
-
-    @DeleteMapping("/{id}")
-    public Mono<Void> deleteById(@PathVariable("id") final String id) {
-		users.removeIf(u -> u.getUuid().equals(id));
-    	return Mono.empty();
-    }
-
-    @GetMapping("/me")
-    public Mono<User> getUser() {
-    	return Mono.just(users.get(0));
+    public Mono<String> findAll(final Model model) {
+        var usersFlux = Mono.just(users).flatMapMany(Flux::fromIterable);
+		model.addAttribute("users", usersFlux);
+		return Mono.just("users");
     }
 }
 ```
 
-# Model
-Our User model class is defined in the ``model`` package.
+We have also done the similar things for our ``HelloController`` class.
+
+# View Page
+In ``resources`` folder we have created ``static`` folder. We have created ``hello`` and ``users`` html templates there.
+
+Let's see what's inside ``users.html`` page.
+
 ```
-@Data
-@Builder
-public class User implements Serializable {
-	private String uuid;
-	private String username;
-	private String email;
-	private String password;
-}
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>Displaying all users</h3>
+<div th:each="user: ${users}">
+    <p>uuid: <span th:text="${user.uuid}"></span></p>
+    <p>username: <span th:text="${user.username}"></span></p>
+    <p>email: <span th:text="${user.email}"></span></p>
+    <hr>
+</div>
+</body>
+</html>
 ```
-Note that we have used ``@Data`` and ``@Builder`` annotations from Lombok.
+
+Here we have done the following notable things:
+
+* Added ``xmlns:th="http://www.thymeleaf.org"`` namespace with the html tag.
+* Used the ``th:each`` to iterate over the flux. It will iterate over the flux.
 
 # Run Application
 If your system has already maven in class path, then open terminal / PowerShell inside your project folder and run the following maven command.
@@ -101,19 +91,11 @@ mvn spring-boot:run
 ```
 ![Figure below shows the example.](../images/run-app.png)
 
-You will see the application running on port 8080. However, if you are not familiar enough with terminal / PowerShell, then you can also run it from your favorite IDE. 
+You will see the application running on port 8080. 
+However, if you are not familiar enough with terminal / PowerShell, then you can also run it from your favorite IDE. 
 
 
-
-# Try with Postman
+# View output
+Go to your favorite browser and hit ``http://localhost:8080/users``
 ### All users:
-![](../images/more-about-reactive-controllers/users-all.png)
-
-### By username
-![](../images/more-about-reactive-controllers/by-username.png)
-
-### Update user by ID
-![](../images/more-about-reactive-controllers/update-user.png)
-
-### Delete user by ID
-![](../images/more-about-reactive-controllers/delete-user.png)
+![reactive-webmvc-with-thymeleaf](../images/reactive-webmvc-with-thymeleaf/reactive-webmvc-with-thymeleaf.png)
